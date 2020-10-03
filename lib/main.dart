@@ -19,23 +19,3 @@ class NewsApp extends StatelessWidget{
 }
 
 
-
-class testName{
-  int _age;
-  String _name;
-
-  testName(this._age, this._name);
-
-  String get name => _name;
-
-  set name(String value) {
-    _name = value;
-  }
-
-  int get age => _age;
-
-  set age(int value) {
-    _age = value;
-  }
-}
-
