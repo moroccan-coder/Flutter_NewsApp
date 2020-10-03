@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/pagemodel.dart';
+import 'package:news_app/screens/home_screen.dart';
 import 'package:page_view_indicator/page_view_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoarding extends StatefulWidget {
   @override
@@ -10,7 +12,6 @@ class OnBoarding extends StatefulWidget {
 
 class _OnBoardingState extends State<OnBoarding> {
   List<PageModel> pages;
-
 
   ValueNotifier<int> _pageViewNotifier = ValueNotifier(0);
 
@@ -34,7 +35,7 @@ class _OnBoardingState extends State<OnBoarding> {
         Scaffold(
           body: PageView.builder(
             onPageChanged: (index) {
-          _pageViewNotifier.value = index;
+              _pageViewNotifier.value = index;
             },
             itemBuilder: (context, index) {
               return Stack(
@@ -107,7 +108,19 @@ class _OnBoardingState extends State<OnBoarding> {
                   "GET STARTED",
                   style: TextStyle(color: Colors.white, letterSpacing: 1.5),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  /*Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                   return HomeScreen();
+                 },));*/
+
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      //save inside SharedPreference seen
+                      _updateSeen();
+                      return HomeScreen();
+                    },
+                  ));
+                },
               ),
             ),
           ),
@@ -116,14 +129,8 @@ class _OnBoardingState extends State<OnBoarding> {
     );
   }
 
-
-
-
-
-
-
-  Widget _displayPageIndicators(int length){
-
+  // view indicator plugin
+  Widget _displayPageIndicators(int length) {
     return PageViewIndicator(
       pageIndexNotifier: _pageViewNotifier,
       length: length,
@@ -142,5 +149,11 @@ class _OnBoardingState extends State<OnBoarding> {
         ),
       ),
     );
+  }
+
+  //Save inside shared preferences
+  void _updateSeen() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool('seen', true);
   }
 }
