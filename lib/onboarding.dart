@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/pagemodel.dart';
+import 'package:page_view_indicator/page_view_indicator.dart';
 
 class OnBoarding extends StatefulWidget {
   @override
@@ -9,7 +10,9 @@ class OnBoarding extends StatefulWidget {
 
 class _OnBoardingState extends State<OnBoarding> {
   List<PageModel> pages;
-  int indice = 0;
+
+
+  ValueNotifier<int> _pageViewNotifier = ValueNotifier(0);
 
   void _addPages() {
     pages = List<PageModel>();
@@ -31,9 +34,7 @@ class _OnBoardingState extends State<OnBoarding> {
         Scaffold(
           body: PageView.builder(
             onPageChanged: (index) {
-              setState(() {
-                indice = index;
-              });
+          _pageViewNotifier.value = index;
             },
             itemBuilder: (context, index) {
               return Stack(
@@ -90,10 +91,7 @@ class _OnBoardingState extends State<OnBoarding> {
           alignment: Alignment.center,
           child: Transform.translate(
             offset: Offset(0, 130),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _drawIndicators(),
-            ),
+            child: _displayPageIndicators(pages.length),
           ),
         ),
         Align(
@@ -118,28 +116,30 @@ class _OnBoardingState extends State<OnBoarding> {
     );
   }
 
-  List<Widget> _drawIndicators() {
-    List<Widget> _widgets = List<Widget>();
-    for (int i = 0; i < pages.length; i++) {
-       if(i == indice)
-         {
-           _widgets.add(_drawCircle(Colors.red));
-         }
-       else{
-         _widgets.add(_drawCircle(Colors.grey));
-       }
 
-    }
-    return _widgets;
-  }
 
-  Widget _drawCircle(Color color) {
-    return Container(
-      margin: EdgeInsets.only(right: 6),
-      width: 10,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
+
+
+
+
+  Widget _displayPageIndicators(int length){
+
+    return PageViewIndicator(
+      pageIndexNotifier: _pageViewNotifier,
+      length: length,
+      normalBuilder: (animationController, index) => Circle(
+        size: 8.0,
+        color: Colors.grey,
+      ),
+      highlightedBuilder: (animationController, index) => ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animationController,
+          curve: Curves.ease,
+        ),
+        child: Circle(
+          size: 12.0,
+          color: Colors.blue,
+        ),
       ),
     );
   }
