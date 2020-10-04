@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/screens/home_screen.dart';
+import 'package:news_app/utilities/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/onboarding.dart';
@@ -31,6 +32,7 @@ class NewsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.appTheme,
       home: this._screen,
     );
   }
