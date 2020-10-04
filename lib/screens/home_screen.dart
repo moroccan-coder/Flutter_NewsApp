@@ -18,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
