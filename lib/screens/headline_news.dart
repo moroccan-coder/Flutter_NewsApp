@@ -17,6 +17,13 @@ class _HeadLineNewsState extends State<HeadLineNews> with SingleTickerProviderSt
     super.initState();
     _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
   }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

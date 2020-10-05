@@ -53,13 +53,16 @@ class _TwitterFeedState extends State<TwitterFeed> {
             Row(
               children: [
                 Text("Yassine El haitar"),
-                Text("@coders.ma"),
+                SizedBox(
+                  width: 16,
+                ),
+                Text("@coders.ma",style: TextStyle(color: Colors.grey.shade600),),
               ],
             ),
             SizedBox(
               height: 8,
             ),
-            Text('Mon, 5 oct 2020 . 9:00 pm'),
+            Text('Mon, 5 oct 2020 . 9:00 pm',style: TextStyle(color: Colors.grey.shade600),),
           ],
         )
       ],
