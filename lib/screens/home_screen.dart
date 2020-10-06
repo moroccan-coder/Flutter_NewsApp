@@ -9,6 +9,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+enum PopoutMenu { HELP, ABOUT, CONTACT, SETTINGS }
+
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
@@ -21,9 +23,10 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
-   _tabController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,10 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icon(Icons.search),
             onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () {},
-          ),
+          _PopupMenu(context),
         ],
         bottom: TabBar(
           tabs: [
@@ -67,6 +67,22 @@ class _HomeScreenState extends State<HomeScreen>
           controller: _tabController,
         ),
       ),
+    );
+  }
+
+  Widget _PopupMenu(BuildContext context) {
+    return PopupMenuButton<PopoutMenu>(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<PopoutMenu>(value: PopoutMenu.ABOUT,child: Text("ABOUT"),),
+          PopupMenuItem<PopoutMenu>(value: PopoutMenu.HELP,child: Text("HELP"),),
+          PopupMenuItem<PopoutMenu>(value: PopoutMenu.CONTACT,child: Text("CONTACT"),),
+          PopupMenuItem<PopoutMenu>(value: PopoutMenu.SETTINGS,child: Text("SETTINGS"),),
+        ];
+      },
+      onSelected: (PopoutMenu menu) {
+//TODO :
+      },
     );
   }
 }
