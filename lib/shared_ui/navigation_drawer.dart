@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/models/nav_menu.dart';
+import 'package:news_app/screens/facebook_feeds.dart';
 import 'package:news_app/screens/headline_news.dart';
 import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/instagram_feed.dart';
@@ -16,6 +17,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     NavMenuItem("HeadLine News", () => HeadLineNews()),
     NavMenuItem("Twitter Feeds", () => TwitterFeed()),
     NavMenuItem("Instagram Feeds", () => InstagramFeed()),
+    NavMenuItem("Facebook Feeds", () => FacebookFeeds()),
   ];
 
   List<String> navMenu = [
