@@ -12,7 +12,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Twitter Feed"),
+        title: Text("Twitter Feeds"),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -21,20 +21,23 @@ class _TwitterFeedState extends State<TwitterFeed> {
         ],
       ),
       drawer: NavigationDrawer(),
-      body: (ListView.builder(
+      body: ListView.builder(
         itemCount: 20,
+        padding: EdgeInsets.all(8.0),
         itemBuilder: (context, index) {
           return Card(
+            margin: EdgeInsets.only(bottom: 16),
             child: Column(
               children: [
                 _cardHeader(),
                 _cardBody(),
+                _drawLine(),
                 _cardFooter(),
               ],
             ),
           );
         },
-      )),
+      ),
     );
   }
 
@@ -52,7 +55,9 @@ class _TwitterFeedState extends State<TwitterFeed> {
           children: [
             Row(
               children: [
-                Text("Yassine El haitar"),
+                Text("Yassine El haitar",style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),),
                 SizedBox(
                   width: 16,
                 ),
@@ -73,7 +78,12 @@ class _TwitterFeedState extends State<TwitterFeed> {
     return Padding(
       padding: EdgeInsets.only(right: 16, top: 4, left: 16, bottom: 16),
       child: Text(
-          "We’re supporting a community where more than 50 million people learn, share, and work together to build software."),
+          "We’re supporting a community where more than 50 million people learn, share, and work together to build software.",
+      style: TextStyle(
+        height: 1.6,
+        fontSize: 16,
+      ),
+      ),
     );
   }
 
@@ -89,6 +99,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
                 icon: Icon(
                   Icons.repeat,
                   color: Colors.orange,
+
                 ),
                 onPressed: () {},
               ),
@@ -109,6 +120,14 @@ class _TwitterFeedState extends State<TwitterFeed> {
           ],
         )
       ],
+    );
+  }
+  Widget _drawLine()
+  {
+    return Container(
+      height: 1,
+      color: Colors.grey.shade200,
+      margin: EdgeInsets.only(top: 8),
     );
   }
 }
