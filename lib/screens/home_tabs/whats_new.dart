@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:news_app/api/posts_api.dart';
+import 'package:news_app/models/post.dart';
+import 'package:timeago/timeago.dart' as timeago;
 class WhatsNew extends StatefulWidget {
   @override
   _WhatsNewState createState() => _WhatsNewState();
 }
 
 class _WhatsNewState extends State<WhatsNew> {
+
+  PostsAPI postApi = new PostsAPI();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -15,6 +20,7 @@ class _WhatsNewState extends State<WhatsNew> {
         children: [
           _drawHeader(),
           _drawTopStories(),
+          _drawRecentUpdates(),
         ],
       ),
     );
@@ -76,40 +82,33 @@ class _WhatsNewState extends State<WhatsNew> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Card(
-              child: Column(
-                children: [
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                ],
+              child: FutureBuilder(
+                future: postApi.fetchWhatsNew(),
+                builder: (context,AsyncSnapshot snapshot) {
+
+                  Post post1 = snapshot.data[0];
+                  Post post2 = snapshot.data[1];
+                  Post post3 = snapshot.data[2];
+
+                  return Column(
+                    children: [
+                      _drawSingleRow(post1),
+                      _drawDivider(),
+                      _drawSingleRow(post2),
+                      _drawDivider(),
+                      _drawSingleRow(post3),
+                    ],
+                  );
+                },
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, left: 8),
-                  child: _drawSectionTitle("Recent Updates"),
-                ),
-                _DrawRecentUpdatesCard(Colors.red),
-                _DrawRecentUpdatesCard(Colors.green),
-                SizedBox(
-                  height: 40,
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
   }
 
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -117,10 +116,7 @@ class _WhatsNewState extends State<WhatsNew> {
           SizedBox(
             height: 90,
             width: 90,
-            child: Image(
-              image: ExactAssetImage('assets/images/placeholder_bg.png'),
-              fit: BoxFit.cover,
-            ),
+            child: Image.network(post.featuredImage,fit: BoxFit.cover,),
           ),
           SizedBox(
             width: 18,
@@ -129,7 +125,7 @@ class _WhatsNewState extends State<WhatsNew> {
             child: Column(
               children: [
                 Text(
-                  "At vero eos et accusamus et iusto odio",
+                  post.title,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
@@ -138,16 +134,16 @@ class _WhatsNewState extends State<WhatsNew> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('yassine el haitar'),
+                    Text('yassine el haitar',style: TextStyle(fontSize: 12),),
                     Row(
                       children: [
                         Icon(
                           Icons.timer,
-                          size: 16,
+                          size: 14,
                         ),
                         Text(
-                          '10 min ago',
-                          style: TextStyle(fontSize: 12),
+                          _parseDate(post.dateWritten),
+                          style: TextStyle(fontSize: 10),
                         ),
                       ],
                     )
@@ -175,6 +171,31 @@ class _WhatsNewState extends State<WhatsNew> {
           fontWeight: FontWeight.w600,
           color: Colors.grey.shade800,
           fontSize: 16),
+    );
+  }
+
+
+
+
+
+  Widget _drawRecentUpdates()
+  {
+    return  Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8, left: 8),
+            child: _drawSectionTitle("Recent Updates"),
+          ),
+          _DrawRecentUpdatesCard(Colors.red),
+          _DrawRecentUpdatesCard(Colors.green),
+          SizedBox(
+            height: 40,
+          ),
+        ],
+      ),
     );
   }
 
@@ -233,5 +254,13 @@ class _WhatsNewState extends State<WhatsNew> {
         ],
       ),
     );
+  }
+
+
+  String _parseDate(String dateTime)
+  {
+   DateTime time = DateTime.parse(dateTime);
+
+    return timeago.format(time);
   }
 }

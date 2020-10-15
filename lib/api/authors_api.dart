@@ -9,9 +9,10 @@ class AuthorsAPI {
 
   Future<List<Author>> fetchAllAuthors() async{
     String url = base_api + all_authors_api;
+    List<Author> authors = List<Author>();
+
     var response = await http.get(url);
 
-    List<Author> authors = List<Author>();
     if(response.statusCode == 200)
       {
         var jsonData = jsonDecode(response.body);

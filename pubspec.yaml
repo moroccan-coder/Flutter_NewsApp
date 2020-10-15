@@ -31,6 +31,7 @@ dependencies:
   page_view_indicator:
   shared_preferences:
   http:
+  timeago:
 
 dev_dependencies:
   flutter_test:

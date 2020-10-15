@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/api/authors_api.dart';
+import 'package:news_app/api/categories_api.dart';
+import 'package:news_app/api/posts_api.dart';
 import 'package:news_app/screens/home_tabs/favourites.dart';
 import 'package:news_app/screens/home_tabs/popular.dart';
 import 'package:news_app/screens/home_tabs/whats_new.dart';
@@ -16,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
-  AuthorsAPI authorsApi = new AuthorsAPI();
 
   @override
   void initState() {
@@ -32,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    authorsApi.fetchAllAuthors();
     return Scaffold(
       appBar: AppBar(
         title: Text("Explore"),
