@@ -5,6 +5,10 @@ import 'package:news_app/api/posts_api.dart';
 import 'package:news_app/screens/home_tabs/favourites.dart';
 import 'package:news_app/screens/home_tabs/popular.dart';
 import 'package:news_app/screens/home_tabs/whats_new.dart';
+import 'package:news_app/screens/pages/about.dart';
+import 'package:news_app/screens/pages/contact.dart';
+import 'package:news_app/screens/pages/help.dart';
+import 'package:news_app/screens/pages/settings.dart';
 import 'package:news_app/shared_ui/navigation_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,7 +89,27 @@ class _HomeScreenState extends State<HomeScreen>
         ];
       },
       onSelected: (PopoutMenu menu) {
-//TODO :
+
+        switch(menu)
+            {
+              case PopoutMenu.ABOUT :
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUs(),));
+                break;
+
+          case PopoutMenu.CONTACT :
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUs(),));
+            break;
+
+          case PopoutMenu.HELP :
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Help(),));
+            break;
+
+          case PopoutMenu.SETTINGS :
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(),));
+            }
+
+
+
       },
     );
   }

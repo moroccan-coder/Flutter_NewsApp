@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/api/posts_api.dart';
 import 'package:news_app/models/post.dart';
+import 'package:news_app/screens/single_post.dart';
 import 'package:news_app/utilities/data_utilitis.dart';
 
 class Popular extends StatefulWidget {
@@ -71,51 +72,58 @@ class _PopularState extends State<Popular> {
   Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 90,
-            width: 90,
-            child: Image(
-              image: NetworkImage(post.featuredImage),
-              fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: (){
+          Navigator.push(context,MaterialPageRoute(builder: (context) {
+            return SinglePost(post);
+          },));
+        },
+        child: Row(
+          children: [
+            SizedBox(
+              height: 90,
+              width: 90,
+              child: Image(
+                image: NetworkImage(post.featuredImage),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 18,
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  post.title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('yassine el haitar'),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.timer,
-                          size: 16,
-                        ),
-                        Text(
-                          parseDateHuman(post.dateWritten),
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              ],
+            SizedBox(
+              width: 18,
             ),
-          )
-        ],
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    post.title,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('yassine el haitar'),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            size: 16,
+                          ),
+                          Text(
+                            parseDateHuman(post.dateWritten),
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
