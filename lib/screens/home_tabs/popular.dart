@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/api/posts_api.dart';
+import 'package:news_app/models/post.dart';
+import 'package:news_app/utilities/data_utilitis.dart';
 
 class Popular extends StatefulWidget {
   @override
@@ -6,19 +9,66 @@ class Popular extends StatefulWidget {
 }
 
 class _PopularState extends State<Popular> {
+
+  PostsAPI postsAPI = new PostsAPI();
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 20,
-      itemBuilder: (context, index) {
-        return Card(
-          child: _drawSingleRow(),
-        );
+    return FutureBuilder(
+      future: postsAPI.fetchPostsByCategory("12"),
+      builder: (context,AsyncSnapshot snapshot) {
+
+        switch(snapshot.connectionState)
+            {
+          case ConnectionState.none:
+            return connectionError();
+            break
+                ;
+          case ConnectionState.active:
+            return loading();
+            break;
+
+          case ConnectionState.waiting:
+            return loading();
+            break;
+
+          case ConnectionState.done :
+
+            if(snapshot.hasData)
+              {
+                if(snapshot.hasError)
+                  {
+                   return error(snapshot.error);
+                  }
+                else{
+
+                  List<Post> posts = snapshot.data;
+
+
+                  return ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: _drawSingleRow(posts[index]),
+                      );
+                    },
+                  );
+                }
+              }
+            else{
+              return noData();
+            }
+            break;
+        }
+
+
+
+        return Container(width: 0,height: 0,);
       },
     );
   }
 
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -27,7 +77,7 @@ class _PopularState extends State<Popular> {
             height: 90,
             width: 90,
             child: Image(
-              image: ExactAssetImage('assets/images/placeholder_bg.png'),
+              image: NetworkImage(post.featuredImage),
               fit: BoxFit.cover,
             ),
           ),
@@ -38,7 +88,7 @@ class _PopularState extends State<Popular> {
             child: Column(
               children: [
                 Text(
-                  "At vero eos et accusamus et iusto odio",
+                  post.title,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
@@ -55,7 +105,7 @@ class _PopularState extends State<Popular> {
                           size: 16,
                         ),
                         Text(
-                          '10 min ago',
+                          parseDateHuman(post.dateWritten),
                           style: TextStyle(fontSize: 12),
                         ),
                       ],
@@ -69,4 +119,6 @@ class _PopularState extends State<Popular> {
       ),
     );
   }
+
+
 }

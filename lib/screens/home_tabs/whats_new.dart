@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/api/posts_api.dart';
 import 'package:news_app/models/post.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:news_app/utilities/data_utilitis.dart';
 
 class WhatsNew extends StatefulWidget {
   @override
@@ -83,24 +83,24 @@ class _WhatsNewState extends State<WhatsNew> {
             padding: EdgeInsets.all(8.0),
             child: Card(
               child: FutureBuilder(
-                future: postApi.fetchWhatsNew(),
+                future: postApi.fetchPostsByCategory("19"),
                 builder: (context, AsyncSnapshot snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return _loading();
+                      return loading();
                       break;
 
                     case ConnectionState.active:
-                      return _loading();
+                      return loading();
                       break;
 
                     case ConnectionState.none:
-                      return _connectionError();
+                      return connectionError();
                       break;
 
                     case ConnectionState.done:
                       if (snapshot.error != null) {
-                        return _error(snapshot.error);
+                        return error(snapshot.error);
                       } else {
                         if (snapshot.hasData) {
                           List<Post> posts = snapshot.data;
@@ -120,10 +120,10 @@ class _WhatsNewState extends State<WhatsNew> {
                               ],
                             );
                           } else {
-                            return _noData();
+                            return noData();
                           }
                         } else {
-                          return _noData();
+                          return noData();
                         }
                       }
                       break;
@@ -182,7 +182,7 @@ class _WhatsNewState extends State<WhatsNew> {
                           size: 14,
                         ),
                         Text(
-                          _parseDate(post.dateWritten),
+                          parseDateHuman(post.dateWritten),
                           style: TextStyle(fontSize: 10),
                         ),
                       ],
@@ -218,24 +218,24 @@ class _WhatsNewState extends State<WhatsNew> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: FutureBuilder(
-        future: postApi.fetchRecentUpdate(),
+        future: postApi.fetchPostsByCategory("4"),
         builder: (context,AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return _connectionError();
+              return connectionError();
               break;
 
             case ConnectionState.active:
-              return _loading();
+              return loading();
               break;
 
             case ConnectionState.waiting:
-              return _loading();
+              return loading();
               break;
 
             case ConnectionState.done:
               if (snapshot.hasError) {
-                return _error(snapshot.error);
+                return error(snapshot.error);
               } else {
                 if (snapshot.hasData) {
                   return Column(
@@ -253,7 +253,7 @@ class _WhatsNewState extends State<WhatsNew> {
                     ],
                   );
                 } else {
-                  return _noData();
+                  return noData();
                 }
               }
 
@@ -317,7 +317,7 @@ class _WhatsNewState extends State<WhatsNew> {
                 SizedBox(
                   width: 4,
                 ),
-                Text(_parseDate(post.dateWritten)),
+                Text(parseDateHuman(post.dateWritten)),
               ],
             ),
           )
@@ -326,41 +326,6 @@ class _WhatsNewState extends State<WhatsNew> {
     );
   }
 
-  String _parseDate(String dateTime) {
-    DateTime time = DateTime.parse(dateTime);
 
-    return timeago.format(time);
-  }
 
-  //Loading ProgressBar TopStories Item
-
-  Widget _loading() {
-    return Container(
-      padding: EdgeInsets.all(40),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
-  Widget _connectionError() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Text("Connection Error!!!"),
-    );
-  }
-
-  Widget _error(var error) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Text(error.toString()),
-    );
-  }
-
-  Widget _noData() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Text("No Data Available!"),
-    );
-  }
 }
