@@ -22,7 +22,6 @@ class _SinglePostState extends State<SinglePost> {
           floating: true,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
-
               background: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -34,10 +33,21 @@ class _SinglePostState extends State<SinglePost> {
         ),
         SliverList(
             delegate: SliverChildBuilderDelegate(
-          (context, index) => Container(
-            color: getRandomColor(),
-            height: 150.0,
-          ),
+          (context, index) {
+            if(index ==0)
+              {
+                return Container(
+                  color: Colors.black,
+                  height: 500,
+                );
+              }
+            else{
+              return Container(
+                color: getRandomColor(),
+                height: 150.0,
+              );
+            }
+          },
         )),
       ],
     );
