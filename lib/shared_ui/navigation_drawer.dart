@@ -4,6 +4,7 @@ import 'package:news_app/screens/facebook_feeds.dart';
 import 'package:news_app/screens/headline_news.dart';
 import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/instagram_feed.dart';
+import 'package:news_app/screens/pages/login.dart';
 import 'package:news_app/screens/twitter_feed.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -12,23 +13,37 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+
+
+  bool isLoggedIn = false;
+
   List<NavMenuItem> NavigationMenu = [
     NavMenuItem("Explore", () => HomeScreen()),
     NavMenuItem("HeadLine News", () => HeadLineNews()),
     NavMenuItem("Twitter Feeds", () => TwitterFeed()),
     NavMenuItem("Instagram Feeds", () => InstagramFeed()),
     NavMenuItem("Facebook Feeds", () => FacebookFeeds()),
+    NavMenuItem("Login", () => Login()),
+  /*
+    NavMenuItem("Register", () => FacebookFeeds()),
+    NavMenuItem("Logout", () => FacebookFeeds()),*/
   ];
 
-  List<String> navMenu = [
-    'Explore',
-    'HeadLine News',
-    'Read Later',
-    'Videos',
-    'Photos',
-    'Settings',
-    'Logout',
-  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if(isLoggedIn)
+      {
+        NavigationMenu.add(new NavMenuItem("Logout", () => FacebookFeeds()));
+      }
+    else{
+
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

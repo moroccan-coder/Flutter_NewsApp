@@ -1,23 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:news_app/api/posts_api.dart';
+import 'package:news_app/models/post.dart';
 import 'package:news_app/shared_ui/navigation_drawer.dart';
+import 'package:news_app/utilities/data_utilitis.dart';
 
 class FacebookFeeds extends StatefulWidget {
+
+
+
+
   @override
   _FacebookFeedsState createState() => _FacebookFeedsState();
 }
 
 class _FacebookFeedsState extends State<FacebookFeeds> {
+  PostsAPI postsAPI = new PostsAPI();
   TextStyle _hashTagsStyle = TextStyle(
     color: Colors.orange.shade400,
   );
 
   TextStyle _buttonStyle = TextStyle(color: Colors.blue.shade300);
 
+  List<int> ids = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ids = [0,3];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Instagram Feeds"),
+        title: Text("Facebook Feeds"),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -26,29 +44,66 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
         ],
       ),
       drawer: NavigationDrawer(),
-      body: ListView.builder(
-        itemCount: 20,
-        padding: EdgeInsets.all(8.0),
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.only(bottom: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _drawHeader(),
-                _drawTitle(),
-                _drawHashTags(),
-                _drawBody(),
-                _drawFooter(),
-              ],
-            ),
-          );
-        },
+      body: FutureBuilder(
+        future: postsAPI.fetchPostsByCategory("5"),
+         builder: (context,AsyncSnapshot snapshot) {
+
+          switch(snapshot.connectionState)
+          {
+            case ConnectionState.none:
+             return error(snapshot.error);
+
+              break;
+
+            case ConnectionState.active :
+              return loading();
+              break;
+            case ConnectionState.waiting :
+              return loading();
+              break;
+
+            case ConnectionState.done :
+
+              if(snapshot.hasData)
+                {
+
+                  List<Post> posts = snapshot.data;
+
+                return ListView.builder(
+                    itemCount: posts.length,
+                    padding: EdgeInsets.all(8.0),
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _drawHeader(index,posts[index]),
+                            _drawTitle(posts[index]),
+                            _drawHashTags(),
+                            _drawBody(posts[index]),
+                            _drawFooter(),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+              else{
+                 return Text("No Data");
+              }
+
+              break;
+          }
+
+
+           return Container(width: 0,);
+         },
       ),
     );
   }
 
-  _drawHeader() {
+  _drawHeader(int index, Post post) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -73,7 +128,7 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
                   height: 8,
                 ),
                 Text(
-                  'Mon, 5 oct 2020 . 9:00 pm',
+                  post.dateWritten,
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
               ],
@@ -85,9 +140,19 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
             IconButton(
               icon: Icon(
                 Icons.favorite,
-                color: Colors.grey.shade400,
+                color:(ids.contains(index)) ? Colors.red: Colors.grey.shade400,
               ),
-              onPressed: () {},
+              onPressed: () {
+
+                setState(() {
+                  if(ids.contains(index))
+                    {
+                      ids.remove(index);
+                    }else{
+                    ids.add(index);
+                  }
+                });
+              },
             ),
             Transform.translate(
                 offset: Offset(-12, 0),
@@ -101,11 +166,11 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
     );
   }
 
-  _drawTitle() {
+  _drawTitle(Post post) {
     return Padding(
       padding: EdgeInsets.only(bottom: 4, left: 16, right: 16, top: 16),
       child: Text(
-        "The AI futures is scary, think about it!",
+        post.title,
         style: TextStyle(color: Colors.grey.shade900),
       ),
     );
@@ -128,14 +193,12 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
     );
   }
 
-  _drawBody() {
+  _drawBody(Post post) {
     return SizedBox(
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.32,
       child: Image(
-        image: AssetImage(
-          "assets/images/placeholder_bg.png",
-        ),
+        image: NetworkImage(post.featuredImage),
         fit: BoxFit.cover,
       ),
     );
