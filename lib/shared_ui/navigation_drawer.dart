@@ -6,6 +6,7 @@ import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/instagram_feed.dart';
 import 'package:news_app/screens/pages/login.dart';
 import 'package:news_app/screens/twitter_feed.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -13,9 +14,10 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-
-
   bool isLoggedIn = false;
+  String token;
+
+  SharedPreferences pref;
 
   List<NavMenuItem> NavigationMenu = [
     NavMenuItem("Explore", () => HomeScreen()),
@@ -23,27 +25,36 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     NavMenuItem("Twitter Feeds", () => TwitterFeed()),
     NavMenuItem("Instagram Feeds", () => InstagramFeed()),
     NavMenuItem("Facebook Feeds", () => FacebookFeeds()),
-    NavMenuItem("Login", () => Login()),
-  /*
+    /*
     NavMenuItem("Register", () => FacebookFeeds()),
     NavMenuItem("Logout", () => FacebookFeeds()),*/
   ];
 
+  _checkToken() async {
+    pref = await SharedPreferences.getInstance();
+    token = pref.get("token");
+
+    setState(() {
+      if (token == null) {
+       // isLoggedIn = false;
+        NavigationMenu.add(new NavMenuItem("Login", () => Login()));
+      } else {
+       // isLoggedIn = true;
+        NavigationMenu.add(new NavMenuItem("Logout", () => HomeScreen()));
+      }
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    if(isLoggedIn)
-      {
-        NavigationMenu.add(new NavMenuItem("Logout", () => FacebookFeeds()));
-      }
-    else{
+    _checkToken();
 
-    }
+
+
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +78,26 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   color: Colors.grey.shade400,
                 ),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return NavigationMenu[index].destination();
-                    },
-                  ));
+
+                  if(NavigationMenu[index].title =="Logout")
+                    {
+                      pref.remove("token");
+                      Navigator.pop(context);
+                    }
+                  else
+                    {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return NavigationMenu[index].destination();
+                        },
+                      ));
+
+                    }
+
+
+
+
                 },
               );
             },
@@ -81,4 +106,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       ),
     );
   }
+
+
 }
